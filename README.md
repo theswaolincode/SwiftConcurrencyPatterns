@@ -1,23 +1,48 @@
 # Swift Concurrency Patterns
 
-A runnable SwiftUI catalog of the 8 Swift concurrency patterns every iOS developer should know, built in full **Swift 6 language mode** with strict concurrency checking on.
+A learning project: 8 runnable SwiftUI demos covering the Swift concurrency patterns every iOS developer should know, built in full **Swift 6 language mode** with strict concurrency checking on.
 
-Each pattern is its own screen: tap a button, watch a timestamped log show the async behavior as it actually happens.
+This isn't just a reference — it's meant to be used. Each pattern is its own screen: tap a button, watch a timestamped log show the async behavior as it actually happens (things finishing out of order, cancellation cutting a job short, 50 writers hitting one actor without corrupting it). Read the code alongside the log output to see *why* it behaves that way.
 
-## Patterns
+`ContentView` groups all eight the way they're best learned, in order:
 
-| # | Pattern | File | What it shows |
-|---|---------|------|----------------|
-| 1 | `async`/`await` | [`01_AsyncAwaitView.swift`](SwiftConcurrencyPatterns/Patterns/01_AsyncAwaitView.swift) | Linear `try await` code replacing nested completion handlers |
-| 2 | `Task { }` | [`02_TaskView.swift`](SwiftConcurrencyPatterns/Patterns/02_TaskView.swift) | Bridging a synchronous button action into async work |
-| 3 | `withTaskGroup` | [`03_TaskGroupView.swift`](SwiftConcurrencyPatterns/Patterns/03_TaskGroupView.swift) | Fanning out over a dynamic list of URLs in parallel |
-| 4 | `async let` | [`04_AsyncLetView.swift`](SwiftConcurrencyPatterns/Patterns/04_AsyncLetView.swift) | Running a fixed number of concurrent calls and joining the results |
-| 5 | `@MainActor` | [`05_MainActorView.swift`](SwiftConcurrencyPatterns/Patterns/05_MainActorView.swift) | A view model whose state is compiler-guaranteed to update on the main thread |
-| 6 | `actor` | [`06_ActorView.swift`](SwiftConcurrencyPatterns/Patterns/06_ActorView.swift) | 50 concurrent writers hammering a shared cache with zero lost updates |
-| 7 | `AsyncSequence` | [`07_AsyncSequenceView.swift`](SwiftConcurrencyPatterns/Patterns/07_AsyncSequenceView.swift) | Consuming a live message feed with `for await` |
-| 8 | Task Cancellation | [`08_TaskCancellationView.swift`](SwiftConcurrencyPatterns/Patterns/08_TaskCancellationView.swift) | Cooperative cancellation via `Task.checkCancellation()` |
+1. **Must know** — `async`/`await`, `Task { }`, `withTaskGroup`, `async let`
+2. **Understand deeply** — `@MainActor`, `actor`
+3. **Production-ready** — `AsyncSequence`, Task Cancellation
 
-`ContentView` lists all eight, grouped the way the source poster recommends learning them: **Must know** → **Understand deeply** → **Production-ready**.
+## Patterns: how they work and when to reach for them
+
+### 1. `async`/`await` — [`01_AsyncAwaitView.swift`](SwiftConcurrencyPatterns/Patterns/01_AsyncAwaitView.swift)
+**How it works:** a function marked `async` can suspend at an `await` point without blocking the thread; execution resumes later, wherever the runtime decides is appropriate. Errors propagate with normal `try`/`catch` instead of a `Result` parameter.
+**When to use it:** the default for any single asynchronous call — a network request, a disk read, anything you'd have used a completion handler for. It's the foundation every other pattern here is built on.
+
+### 2. `Task { }` — [`02_TaskView.swift`](SwiftConcurrencyPatterns/Patterns/02_TaskView.swift)
+**How it works:** creates new, unstructured concurrent work from a synchronous context. It starts running independently and keeps going even after the code that created it returns.
+**When to use it:** whenever you need to call `async` code from somewhere that *can't* be `async` — a SwiftUI button action, `viewDidLoad`, a delegate callback. It's the bridge between sync and async worlds, not something you nest async code inside of once you're already in an async context.
+
+### 3. `withTaskGroup` — [`03_TaskGroupView.swift`](SwiftConcurrencyPatterns/Patterns/03_TaskGroupView.swift)
+**How it works:** spins up a *dynamic* number of child tasks that run concurrently, then lets you collect their results as each one finishes (in completion order, not start order).
+**When to use it:** when the amount of concurrent work isn't known until runtime — fetching N items from an array of IDs, batch downloads, processing a variable-size list in parallel. If you don't know `N` ahead of time, this is the tool.
+
+### 4. `async let` — [`04_AsyncLetView.swift`](SwiftConcurrencyPatterns/Patterns/04_AsyncLetView.swift)
+**How it works:** binds the result of an async call to a constant that starts running immediately; the actual `await` happens later, when you read the value. Multiple `async let`s declared together all run concurrently.
+**When to use it:** when you know exactly how many independent async calls you need — usually 2 or 3, hardcoded — and just want to run them in parallel and join the results, e.g. loading a profile and its posts at the same time before rendering one screen. For a *variable* number of calls, use `withTaskGroup` instead.
+
+### 5. `@MainActor` — [`05_MainActorView.swift`](SwiftConcurrencyPatterns/Patterns/05_MainActorView.swift)
+**How it works:** pins a type, property, or function to the main actor. The compiler then *proves* — not just hopes — that its state is only ever touched from the main thread, rejecting any code path that could mutate it off the main thread.
+**When to use it:** on view models and any other state that drives UI. It replaces the old runtime crash/warning ("Publishing changes from background threads") with a compile-time guarantee, so the bug never ships.
+
+### 6. `actor` — [`06_ActorView.swift`](SwiftConcurrencyPatterns/Patterns/06_ActorView.swift)
+**How it works:** an `actor` serializes access to its own mutable state — only one task can be executing inside it at a time. Concurrent callers each `await` their turn instead of racing.
+**When to use it:** for shared mutable state that many tasks read and write concurrently and that isn't naturally tied to the main thread — a cache, a connection pool, an in-memory store. Where `@MainActor` says "only the main thread may touch this," `actor` says "only one caller at a time may touch this, whoever that is."
+
+### 7. `AsyncSequence` — [`07_AsyncSequenceView.swift`](SwiftConcurrencyPatterns/Patterns/07_AsyncSequenceView.swift)
+**How it works:** models a sequence of values that arrive over time, consumed with `for await` exactly like iterating a normal `Sequence` — except each element is produced (and can be awaited) one at a time instead of all being available up front.
+**When to use it:** streaming data — WebSocket messages, live feeds, progress updates, log lines. Anything where you'd otherwise have wired up a callback per event, and where buffering everything in memory before processing would be wasteful or impossible (an infinite stream).
+
+### 8. Task Cancellation — [`08_TaskCancellationView.swift`](SwiftConcurrencyPatterns/Patterns/08_TaskCancellationView.swift)
+**How it works:** cancellation is cooperative — calling `.cancel()` on a `Task` only *flags* it. The work itself has to check `Task.checkCancellation()` (throws) or `Task.isCancelled` and stop on its own; nothing is forced to stop.
+**When to use it:** any long-running or resumable work that the user might navigate away from or explicitly cancel — a search-as-you-type request, a large upload, a multi-step job. Production code should always check cancellation periodically in loops so abandoned work doesn't keep burning CPU and battery.
 
 ## Project layout
 
@@ -48,4 +73,4 @@ SwiftConcurrencyPatterns/
 
 ## Running it
 
-Open `SwiftConcurrencyPatterns.xcodeproj` in Xcode and run the app on any simulator or device target. Each list row pushes to a live demo — start, watch the log, and (for pattern 8) try cancelling mid-run.
+Open `SwiftConcurrencyPatterns.xcodeproj` in Xcode and run the app on any simulator or device target. Each list row pushes to a live demo — start it, read the log as it fills in, and for pattern 8 try tapping Cancel mid-run to see cooperative cancellation actually cut the work short.
