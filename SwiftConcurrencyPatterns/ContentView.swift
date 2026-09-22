@@ -26,6 +26,9 @@ struct ContentView: View {
                     PatternLink(number: 6, title: "Actors", subtitle: "Protects shared mutable state without locks.") {
                         ActorView()
                     }
+                    PatternLink(number: 9, title: "Sendable", subtitle: "Marks types safe to cross concurrency domains.") {
+                        SendableView()
+                    }
                 }
 
                 Section("Production-ready") {

@@ -1,13 +1,13 @@
 # Swift Concurrency Patterns
 
-A learning project: 8 runnable SwiftUI demos covering the Swift concurrency patterns every iOS developer should know, built in full **Swift 6 language mode** with strict concurrency checking on.
+A learning project: 9 runnable SwiftUI demos covering the Swift concurrency patterns every iOS developer should know, built in full **Swift 6 language mode** with strict concurrency checking on.
 
 This isn't just a reference — it's meant to be used. Each pattern is its own screen: tap a button, watch a timestamped log show the async behavior as it actually happens (things finishing out of order, cancellation cutting a job short, 50 writers hitting one actor without corrupting it). Read the code alongside the log output to see *why* it behaves that way.
 
-`ContentView` groups all eight the way they're best learned, in order:
+`ContentView` groups all 9 the way they're best learned, in order:
 
 1. **Must know** — `async`/`await`, `Task { }`, `withTaskGroup`, `async let`
-2. **Understand deeply** — `@MainActor`, `actor`
+2. **Understand deeply** — `@MainActor`, `actor`, `Sendable`
 3. **Production-ready** — `AsyncSequence`, Task Cancellation
 
 ## Patterns: how they work and when to reach for them
@@ -36,6 +36,10 @@ This isn't just a reference — it's meant to be used. Each pattern is its own s
 **How it works:** an `actor` serializes access to its own mutable state — only one task can be executing inside it at a time. Concurrent callers each `await` their turn instead of racing.
 **When to use it:** for shared mutable state that many tasks read and write concurrently and that isn't naturally tied to the main thread — a cache, a connection pool, an in-memory store. Where `@MainActor` says "only the main thread may touch this," `actor` says "only one caller at a time may touch this, whoever that is."
 
+### 9. `Sendable` — [`09_SendableView.swift`](SwiftConcurrencyPatterns/Patterns/09_SendableView.swift)
+**How it works:** `Sendable` marks a type as safe to pass across concurrency domains — into a `Task`, an `actor`, another thread — without risking a data race. A `struct`/`enum` gets it for free once every stored property is itself `Sendable`. A `class` doesn't: two references to the same instance could be mutated from two places at once, so the compiler refuses to let a non-Sendable class cross into a `@Sendable` closure. You either make it an `actor` (Pattern 6, preferred) or manually synchronize it yourself and mark it `@unchecked Sendable` as a promise to the compiler. The `@Sendable` *attribute* is the closure-level version of the same idea — you rarely write it yourself when calling `Task { }`, since the standard library already declares those parameters as sendable, but you do need it when authoring your own API that hands a closure to another concurrency domain.
+**When to use it:** think about it every time a value needs to cross from one actor/task to another — which is constantly, since almost every pattern above involves a boundary. It's less a pattern you "reach for" and more the safety property the compiler is checking for you throughout all the others.
+
 ### 7. `AsyncSequence` — [`07_AsyncSequenceView.swift`](SwiftConcurrencyPatterns/Patterns/07_AsyncSequenceView.swift)
 **How it works:** models a sequence of values that arrive over time, consumed with `for await` exactly like iterating a normal `Sequence` — except each element is produced (and can be awaited) one at a time instead of all being available up front.
 **When to use it:** streaming data — WebSocket messages, live feeds, progress updates, log lines. Anything where you'd otherwise have wired up a callback per event, and where buffering everything in memory before processing would be wasteful or impossible (an infinite stream).
@@ -48,7 +52,7 @@ This isn't just a reference — it's meant to be used. Each pattern is its own s
 
 ```
 SwiftConcurrencyPatterns/
-├── ContentView.swift        # navigation hub listing all 8 patterns
+├── ContentView.swift        # navigation hub listing all 9 patterns
 ├── MyApp.swift               # app entry point
 ├── Support/
 │   ├── MockAPI.swift          # shared fake network layer used by every demo
@@ -62,7 +66,8 @@ SwiftConcurrencyPatterns/
     ├── 05_MainActorView.swift
     ├── 06_ActorView.swift
     ├── 07_AsyncSequenceView.swift
-    └── 08_TaskCancellationView.swift
+    ├── 08_TaskCancellationView.swift
+    └── 09_SendableView.swift
 ```
 
 ## Requirements
