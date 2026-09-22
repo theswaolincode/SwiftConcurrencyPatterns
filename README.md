@@ -79,3 +79,15 @@ SwiftConcurrencyPatterns/
 ## Running it
 
 Open `SwiftConcurrencyPatterns.xcodeproj` in Xcode and run the app on any simulator or device target. Each list row pushes to a live demo — start it, read the log as it fills in, and for pattern 8 try tapping Cancel mid-run to see cooperative cancellation actually cut the work short.
+
+## Step-by-step tutorial
+
+The `tutorial` branch adds `Tutorials.docc` — a DocC Tutorials catalog in the same format as Apple's own [App Dev Training tutorials](https://developer.apple.com/tutorials/app-dev-training), covering all 9 patterns as chaptered, step-by-step lessons with real code snapshots from this project.
+
+To read it:
+
+```bash
+xcrun docc preview Tutorials.docc --fallback-display-name "Swift 6 Concurrency Patterns" --fallback-bundle-identifier com.example.SwiftConcurrencyPatterns.Tutorials --fallback-bundle-version 1.0
+```
+
+then open `http://localhost:8080/tutorials/table-of-contents`. You can also just open the `Tutorials.docc` folder directly in Xcode (File ▸ Open) to read and edit it there.

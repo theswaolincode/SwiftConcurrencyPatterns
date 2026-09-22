@@ -1,0 +1,29 @@
+@Tutorial(time: 6) {
+    @Intro(title: "async let") {
+        Run a fixed, known number of async operations concurrently with almost no ceremony.
+    }
+
+    @Section(title: "Run two known calls in parallel") {
+        @ContentAndMedia {
+            Each `async let` binding starts running immediately when it's declared. The actual `await` happens later, when you read the value — by then, the work may already be finished.
+        }
+
+        @Steps {
+            @Step {
+                Declaring two `async let`s starts both requests concurrently, right at this line — before either is awaited.
+
+                @Code(name: "04_AsyncLetView.swift", file: "p04-async-let-01.swift")
+            }
+
+            @Step {
+                Awaiting the tuple `(profile, posts)` just joins work that's already in flight — it doesn't start anything new. If either request throws, the `catch` below handles it.
+
+                @Code(name: "04_AsyncLetView.swift", file: "p04-async-let-02.swift")
+            }
+
+            @Step {
+                Run the app, open **async let**, and tap **Load profile screen**. Both the bio and the posts appear together, roughly one second later — not two seconds, which is what you'd get if you awaited each one in sequence instead.
+            }
+        }
+    }
+}

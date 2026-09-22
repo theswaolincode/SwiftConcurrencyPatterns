@@ -1,0 +1,29 @@
+@Tutorial(time: 8) {
+    @Intro(title: "async / await") {
+        Replace nested completion handlers with linear, `try`-based asynchronous code — the foundation every other pattern in this series builds on.
+    }
+
+    @Section(title: "Understand async / await") {
+        @ContentAndMedia {
+            An `async` function can suspend at an `await` point without blocking the calling thread. Execution resumes later, and errors propagate with ordinary `try`/`catch` instead of a `Result` parameter threaded through a completion handler.
+        }
+
+        @Steps {
+            @Step {
+                `MockAPI.fetchUsers()` is declared `async throws`. It simulates a one-second delay with `Task.sleep`, then returns a `Sendable` array of `User` values.
+
+                @Code(name: "MockAPI.swift", file: "p01-async-await-01.swift")
+            }
+
+            @Step {
+                `AsyncAwaitView` calls it with a single `try await` line inside `loadUsers()`. Compare this to how the same request would look with a completion handler: no nested closure, no `Result` switch — errors are caught with a plain `catch`.
+
+                @Code(name: "01_AsyncAwaitView.swift", file: "p01-async-await-02.swift")
+            }
+
+            @Step {
+                Run the app, open **async / await**, and tap **Load users**. The log shows "Requesting users…" immediately, then the result appears about a second later once the simulated request finishes — the suspension at `await` is real, not just syntax.
+            }
+        }
+    }
+}

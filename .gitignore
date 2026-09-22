@@ -2,6 +2,7 @@
 .swiftpm/
 .build/
 DerivedData/
+.docc-build/
 *.xcuserstate
 xcuserdata/
 *.xcscmblueprint

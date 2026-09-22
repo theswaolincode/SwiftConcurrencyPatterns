@@ -1,0 +1,29 @@
+@Tutorial(time: 6) {
+    @Intro(title: "AsyncSequence") {
+        Consume a stream of values that arrive over time, one at a time, with `for await`.
+    }
+
+    @Section(title: "Stream values instead of buffering them") {
+        @ContentAndMedia {
+            `AsyncSequence` models values that arrive over time — socket messages, a live feed, progress updates — as something you iterate just like a normal `Sequence`, except each element can suspend while it waits to arrive.
+        }
+
+        @Steps {
+            @Step {
+                `MockAPI.messageStream()` wraps an `AsyncStream`: a `Task` yields a new message every 400ms, and `continuation.onTermination` cancels that task if nobody's listening anymore.
+
+                @Code(name: "MockAPI.swift", file: "p07-async-sequence-01.swift")
+            }
+
+            @Step {
+                `AsyncSequenceView` consumes it with `for await`. Each message is handled the moment it arrives — nothing is buffered up front, which matters for a feed that could run indefinitely.
+
+                @Code(name: "07_AsyncSequenceView.swift", file: "p07-async-sequence-02.swift")
+            }
+
+            @Step {
+                Run the app, open **AsyncSequence**, and tap **Start feed**. Messages appear roughly every 400ms as they're produced. Tap **Stop** partway through — the stream's `onTermination` cancels the producing task immediately instead of letting it run to the end unseen.
+            }
+        }
+    }
+}

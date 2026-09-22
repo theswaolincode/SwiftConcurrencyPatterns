@@ -1,0 +1,29 @@
+@Tutorial(time: 6) {
+    @Intro(title: "@MainActor") {
+        Pin a type to the main actor so the compiler guarantees its state is only ever touched from the main thread.
+    }
+
+    @Section(title: "Make UI state compiler-safe") {
+        @ContentAndMedia {
+            `@MainActor` turns "Publishing changes from background threads" — a bug you'd normally discover at runtime, maybe in production — into a compile error you can't ship.
+        }
+
+        @Steps {
+            @Step {
+                `DashboardViewModel` is marked `@MainActor`. Every property read or write on it is compiler-checked to happen on the main thread, including the two direct assignments to `statusText` here.
+
+                @Code(name: "05_MainActorView.swift", file: "p05-main-actor-01.swift")
+            }
+
+            @Step {
+                Because of that, this — mutating the view model from a detached, off-main-actor task — simply doesn't compile. That's the guarantee: the compiler proves it, rather than you hoping no background code path ever touches this state.
+
+                @Code(name: "05_MainActorView.swift", file: "p05-main-actor-02.swift")
+            }
+
+            @Step {
+                Run the app, open **@MainActor**, and tap **Refresh**. `refresh()` hops off the main actor while awaiting the simulated network call (because `fetchUsers` is `nonisolated`), then resumes back on the main actor to update `statusText` — all invisible to you, and all verified by the compiler.
+            }
+        }
+    }
+}

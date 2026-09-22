@@ -1,0 +1,29 @@
+@Tutorial(time: 6) {
+    @Intro(title: "Task Cancellation") {
+        Understand why cancellation is cooperative — and why production code has to check for it.
+    }
+
+    @Section(title: "Stop long-running work promptly") {
+        @ContentAndMedia {
+            Calling `.cancel()` on a `Task` only flags it as cancelled. The work itself has to notice — by calling `Task.checkCancellation()` or checking `Task.isCancelled` — and stop on its own. Nothing forces it to.
+        }
+
+        @Steps {
+            @Step {
+                Without a cancellation check, this 10-step job ignores `.cancel()` entirely and runs to completion regardless of what the Cancel button does.
+
+                @Code(name: "08_TaskCancellationView.swift", file: "p08-task-cancellation-01.swift")
+            }
+
+            @Step {
+                Adding `try Task.checkCancellation()` at the top of the loop makes the job responsive: once cancelled, it throws `CancellationError` at the next check instead of continuing, and the `catch is CancellationError` branch logs that it stopped early.
+
+                @Code(name: "08_TaskCancellationView.swift", file: "p08-task-cancellation-02.swift")
+            }
+
+            @Step {
+                Run the app, open **Task Cancellation**, tap **Start job**, then tap **Cancel** partway through. The step count stops well before 10/10, and the log reports "cancelled before completion" instead of "finished" — the exact difference the cancellation check makes.
+            }
+        }
+    }
+}

@@ -1,0 +1,37 @@
+@Tutorial(time: 5) {
+    @Intro(title: "Getting Started") {
+        Open the project, take a quick tour of how it's organized, and run it once before diving into the individual patterns.
+    }
+
+    @Section(title: "Open and explore the project") {
+        @ContentAndMedia {
+            Every pattern in this series lives inside one small SwiftUI app. Before writing anything, get oriented: where the demos live, what they share, and how to run one.
+        }
+
+        @Steps {
+            @Step {
+                Open `SwiftConcurrencyPatterns.xcodeproj` in Xcode. The project has three source groups: `Patterns/` holds one file per concurrency pattern, `Support/` holds the pieces every demo shares (a mock network layer and an on-screen log), and `ContentView.swift` lists all nine patterns.
+
+                @Code(name: "ContentView.swift", file: "p00-getting-started-01.swift")
+            }
+
+            @Step {
+                `MockAPI` (in `Support/MockAPI.swift`) is the fake backend every demo calls into. Its functions are `async throws`, simulate a real delay with `Task.sleep`, and are marked `nonisolated` so they genuinely run off the main actor — exactly like a real network client would.
+
+                Keep this file in mind; you'll see it reused by almost every tutorial in this series.
+            }
+
+            @Step {
+                Build and run on a simulator. You'll see a list grouped exactly like the source material for this series recommends learning it: **Must know**, **Understand deeply**, **Production-ready**.
+
+                Tap any row, tap its button, and watch the log underneath fill in with timestamps — that log is how you'll observe each pattern actually behaving, not just read about it.
+            }
+
+            @Step {
+                This tutorial series follows that same order: Foundations first (`async`/`await`, `Task { }`, `withTaskGroup`, `async let`), then isolation and safety (`@MainActor`, `actor`, `Sendable`), then two production-hardening patterns (`AsyncSequence`, task cancellation).
+
+                Continue to the next chapter when you're ready.
+            }
+        }
+    }
+}

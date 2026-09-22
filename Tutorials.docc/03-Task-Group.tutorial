@@ -1,0 +1,29 @@
+@Tutorial(time: 8) {
+    @Intro(title: "withTaskGroup") {
+        Run a *dynamic* number of child tasks concurrently and collect their results as they finish.
+    }
+
+    @Section(title: "Fan out over a dynamic list") {
+        @ContentAndMedia {
+            `async let` (next tutorial) only works for a fixed, hardcoded number of concurrent calls. When the amount of work isn't known until runtime — fetching N items from an array, batch downloads — `withTaskGroup` is the tool that scales.
+        }
+
+        @Steps {
+            @Step {
+                `TaskGroupView` starts from a list of URLs whose length isn't fixed at compile time.
+
+                @Code(name: "03_TaskGroupView.swift", file: "p03-task-group-01.swift")
+            }
+
+            @Step {
+                `withTaskGroup` spins up one child task per URL with `group.addTask { }`, then `for await` collects each result as it arrives — in completion order, not start order. One bad URL fails without cancelling the others, because each result is wrapped in its own `Result`.
+
+                @Code(name: "03_TaskGroupView.swift", file: "p03-task-group-02.swift")
+            }
+
+            @Step {
+                Run the app, open **withTaskGroup**, and tap **Fetch all**. Watch the "Finished …" lines arrive out of order in the log, then the final ✅/❌ summary — the bad URL fails independently instead of taking down the whole batch.
+            }
+        }
+    }
+}

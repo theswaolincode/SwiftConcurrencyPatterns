@@ -1,0 +1,35 @@
+@Tutorials(name: "Swift 6 Concurrency Patterns") {
+    @Intro(title: "Learn Swift 6 Concurrency Patterns") {
+        Learn the 9 core patterns for writing safe, structured concurrent code in Swift 6 — by reading the real, running implementation for each one and watching it behave live in the app, the same way you'd work through an Apple Tutorials project.
+    }
+
+    @Chapter(name: "Getting Started") {
+        Open the project and see how it's organized before diving into individual patterns.
+
+        @TutorialReference(tutorial: "doc:00-Getting-Started")
+    }
+
+    @Chapter(name: "Foundations") {
+        The patterns every Swift 6 developer reaches for first: starting async work, and running a known or unknown number of calls concurrently.
+
+        @TutorialReference(tutorial: "doc:01-Async-Await")
+        @TutorialReference(tutorial: "doc:02-Task")
+        @TutorialReference(tutorial: "doc:03-Task-Group")
+        @TutorialReference(tutorial: "doc:04-Async-Let")
+    }
+
+    @Chapter(name: "Isolation and Safety") {
+        How Swift 6 proves, at compile time, that concurrent code can't race — through main-actor isolation, actors, and the Sendable protocol underneath both.
+
+        @TutorialReference(tutorial: "doc:05-Main-Actor")
+        @TutorialReference(tutorial: "doc:06-Actor")
+        @TutorialReference(tutorial: "doc:09-Sendable")
+    }
+
+    @Chapter(name: "Production Patterns") {
+        Two patterns that matter once code ships: consuming a live stream of values, and stopping long-running work promptly when it's no longer needed.
+
+        @TutorialReference(tutorial: "doc:07-Async-Sequence")
+        @TutorialReference(tutorial: "doc:08-Task-Cancellation")
+    }
+}

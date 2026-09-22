@@ -1,0 +1,31 @@
+@Tutorial(time: 8) {
+    @Intro(title: "Sendable") {
+        Understand the safety property the compiler checks every time a value crosses from one task or actor to another.
+    }
+
+    @Section(title: "Cross concurrency domains safely") {
+        @ContentAndMedia {
+            `Sendable` marks a type as safe to hand to another `Task` or `actor` without risking a data race. Value types usually get it for free; classes need help.
+        }
+
+        @Steps {
+            @Step {
+                `WeatherReport` is a struct whose stored properties are both `Sendable` (`String`, `Double`), so it's `Sendable` automatically. `Counter`, a plain class with mutable state, is not — and capturing it in a `@Sendable` closure like `Task.detached { }` is a compile error, not a runtime risk.
+
+                @Code(name: "09_SendableView.swift", file: "p09-sendable-01.swift")
+            }
+
+            @Step {
+                Two ways to fix a non-Sendable class: make it an `actor` (previous tutorial, preferred), or — when you need to wrap something the compiler can't see into, like a lock-based type — synchronize it yourself and mark it `@unchecked Sendable` as an explicit promise.
+
+                `@Sendable` the *attribute*, on `performInBackground`'s parameter, is the closure-level version of the same idea. You rarely write this yourself calling `Task { }`, since the standard library already declares that parameter as sendable — but your own APIs that hand closures to another concurrency domain need to say so explicitly.
+
+                @Code(name: "09_SendableView.swift", file: "p09-sendable-02.swift")
+            }
+
+            @Step {
+                Run the app, open **Sendable**, and try all three buttons. The locked counter always ends at exactly 50 — for a different reason than the actor in the previous tutorial: here, an `NSLock` you wrote is doing the serializing, not the language.
+            }
+        }
+    }
+}

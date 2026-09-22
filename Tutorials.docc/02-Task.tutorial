@@ -1,0 +1,29 @@
+@Tutorial(time: 6) {
+    @Intro(title: "Task { }") {
+        Bridge synchronous code — a button action, `viewDidLoad`, a delegate callback — into asynchronous work.
+    }
+
+    @Section(title: "Bridge sync code into async work") {
+        @ContentAndMedia {
+            SwiftUI button actions are synchronous closures; they can't be marked `async` and can't `await` anything directly. `Task { }` starts new, unstructured concurrent work that keeps running independently of the closure that created it.
+        }
+
+        @Steps {
+            @Step {
+                A button action can't call an `async` function directly — this doesn't compile.
+
+                @Code(name: "02_TaskView.swift", file: "p02-task-01.swift")
+            }
+
+            @Step {
+                Wrapping the call in `Task { }` bridges the gap. The action closure itself stays synchronous and returns immediately; the `Task` keeps running the fetch in the background.
+
+                @Code(name: "02_TaskView.swift", file: "p02-task-02.swift")
+            }
+
+            @Step {
+                Run the app, open **Task { }**, and tap **Load data**. Notice the "returned immediately" log line can appear before "Task started" — the task is scheduled, not run inline, and the button action never blocked waiting for it.
+            }
+        }
+    }
+}

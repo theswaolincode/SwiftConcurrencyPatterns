@@ -1,0 +1,29 @@
+@Tutorial(time: 8) {
+    @Intro(title: "Actors") {
+        Protect shared mutable state from concurrent access without writing a single lock.
+    }
+
+    @Section(title: "Serialize access to shared state") {
+        @ContentAndMedia {
+            An `actor` allows only one task at a time to be executing inside it. Concurrent callers each `await` their turn instead of racing to mutate the same memory.
+        }
+
+        @Steps {
+            @Step {
+                `CacheManager` is declared `actor`, not `class`. Its `storage` dictionary and `writeCount` counter can only ever be touched by one caller at a time — the `+= 1` is safe purely because of that.
+
+                @Code(name: "06_ActorView.swift", file: "p06-actor-01.swift")
+            }
+
+            @Step {
+                50 tasks call `cache.store(...)` concurrently through `withTaskGroup`. Each `await` is where a task waits its turn to enter the actor — none of them ever run inside it simultaneously.
+
+                @Code(name: "06_ActorView.swift", file: "p06-actor-02.swift")
+            }
+
+            @Step {
+                Run the app, open **Actors**, and tap **Hammer the cache with 50 concurrent writes**. The log always reports exactly 50 — try the same experiment mentally with a plain `class` instead of an `actor`, and you'd expect lost updates under this much contention.
+            }
+        }
+    }
+}
