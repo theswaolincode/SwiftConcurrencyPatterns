@@ -87,7 +87,9 @@ The `tutorial` branch adds `Tutorials.docc` — a DocC Tutorials catalog in the 
 To read it:
 
 ```bash
-xcrun docc preview Tutorials.docc --fallback-display-name "Swift 6 Concurrency Patterns" --fallback-bundle-identifier com.example.SwiftConcurrencyPatterns.Tutorials --fallback-bundle-version 1.0
+./preview-tutorial.sh
 ```
 
-then open `http://localhost:8080/tutorials/table-of-contents`. You can also just open the `Tutorials.docc` folder directly in Xcode (File ▸ Open) to read and edit it there.
+then open `http://localhost:8080/tutorials/table-of-contents`. Don't run plain `xcrun docc preview` — without the flags this script passes, DocC generates a broken bundle identifier and every chapter/tutorial link silently fails to navigate.
+
+You can also open the `Tutorials.docc` folder directly in Xcode (File ▸ Open) to edit it, but as of this Xcode beta the live in-Xcode preview canvas doesn't activate for a catalog that isn't wired into a project target — use the script above to actually read it rendered.
