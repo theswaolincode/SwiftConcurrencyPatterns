@@ -84,12 +84,15 @@ Open `SwiftConcurrencyPatterns.xcodeproj` in Xcode and run the app on any simula
 
 The `tutorial` branch adds `Tutorials.docc` — a DocC Tutorials catalog in the same format as Apple's own [App Dev Training tutorials](https://developer.apple.com/tutorials/app-dev-training), covering all 9 patterns as chaptered, step-by-step lessons with real code snapshots from this project.
 
-To read it:
+To read it, either:
 
-```bash
-./preview-tutorial.sh
-```
+- **From Xcode**: select the **`PreviewTutorial`** scheme and press **⌘B** (Build). The first time, macOS will ask permission for Xcode to control Terminal — allow it. It opens a Terminal window running the preview server, then opens your browser to the table of contents.
+- **From a terminal**:
+  ```bash
+  ./preview-tutorial.sh
+  ```
+  then open `http://localhost:8080/tutorials/table-of-contents`.
 
-then open `http://localhost:8080/tutorials/table-of-contents`. Don't run plain `xcrun docc preview` — without the flags this script passes, DocC generates a broken bundle identifier and every chapter/tutorial link silently fails to navigate.
+Don't run plain `xcrun docc preview` — without the flags this script passes, DocC generates a broken bundle identifier and every chapter/tutorial link silently fails to navigate.
 
-You can also open the `Tutorials.docc` folder directly in Xcode (File ▸ Open) to edit it, but as of this Xcode beta the live in-Xcode preview canvas doesn't activate for a catalog that isn't wired into a project target — use the script above to actually read it rendered.
+Opening the `Tutorials.docc` folder directly in Xcode (File ▸ Open) lets you edit it, but as of this Xcode beta the live in-Xcode preview canvas doesn't activate for a catalog that isn't wired into a project target — use one of the options above to actually read it rendered.

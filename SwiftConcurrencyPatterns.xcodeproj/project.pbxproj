@@ -6,6 +6,20 @@
 	objectVersion = 90;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		000000000000000200000000 /* PreviewTutorial */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 000000000000000210000000 /* Build configuration list for PBXAggregateTarget "PreviewTutorial" */;
+			buildPhases = (
+				000000000000000160000000 /* Run docc preview */,
+			);
+			dependencies = (
+			);
+			name = PreviewTutorial;
+			productName = PreviewTutorial;
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXFileReference section */
 		000000000000000000000120 /* SwiftConcurrencyPatterns.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftConcurrencyPatterns.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -94,6 +108,7 @@
 			projectRoot = "";
 			targets = (
 				000000000000000100000000 /* SwiftConcurrencyPatterns */,
+				000000000000000200000000 /* PreviewTutorial */,
 			);
 		};
 /* End PBXProject section */
@@ -105,6 +120,27 @@
 			);
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		000000000000000160000000 /* Run docc preview */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Run docc preview";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if ! lsof -i:8080 -sTCP:LISTEN -t >/dev/null 2>&1; then\n  osascript -e 'tell application \"Terminal\" to do script \"'\"$SRCROOT\"'/preview-tutorial.sh\"'\n  sleep 2\nfi\nopen \"http://localhost:8080/tutorials/table-of-contents\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		000000000000000120000000 /* Sources */ = {
@@ -321,6 +357,20 @@
 			};
 			name = Release;
 		};
+		000000000000000211000000 /* Debug configuration for PBXAggregateTarget "PreviewTutorial" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = PreviewTutorial;
+			};
+			name = Debug;
+		};
+		000000000000000212000000 /* Release configuration for PBXAggregateTarget "PreviewTutorial" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = PreviewTutorial;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -337,6 +387,14 @@
 			buildConfigurations = (
 				000000000000000111000000 /* Debug configuration for PBXNativeTarget "SwiftConcurrencyPatterns" */,
 				000000000000000112000000 /* Release configuration for PBXNativeTarget "SwiftConcurrencyPatterns" */,
+			);
+			defaultConfigurationName = Release;
+		};
+		000000000000000210000000 /* Build configuration list for PBXAggregateTarget "PreviewTutorial" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				000000000000000211000000 /* Debug configuration for PBXAggregateTarget "PreviewTutorial" */,
+				000000000000000212000000 /* Release configuration for PBXAggregateTarget "PreviewTutorial" */,
 			);
 			defaultConfigurationName = Release;
 		};
