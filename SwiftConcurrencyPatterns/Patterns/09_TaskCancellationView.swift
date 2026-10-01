@@ -1,6 +1,6 @@
 import SwiftUI
 
-// MARK: - Pattern 8: Task Cancellation
+// MARK: - Pattern 9: Task Cancellation
 //
 // Cancellation in Swift concurrency is cooperative: cancelling a `Task`
 // only *signals* it. Long-running work must check `Task.checkCancellation()`

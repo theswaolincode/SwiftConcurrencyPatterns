@@ -1,6 +1,6 @@
 import SwiftUI
 
-// MARK: - Pattern 7: AsyncSequence
+// MARK: - Pattern 8: AsyncSequence
 //
 // Models a stream of values that arrive over time — socket messages, a live
 // feed, progress updates, log lines — as something you can `for await` over,

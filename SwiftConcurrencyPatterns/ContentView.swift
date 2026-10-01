@@ -26,16 +26,16 @@ struct ContentView: View {
                     PatternLink(number: 6, title: "Actors", subtitle: "Protects shared mutable state without locks.") {
                         ActorView()
                     }
-                    PatternLink(number: 9, title: "Sendable", subtitle: "Marks types safe to cross concurrency domains.") {
+                    PatternLink(number: 7, title: "Sendable", subtitle: "Marks types safe to cross concurrency domains.") {
                         SendableView()
                     }
                 }
 
                 Section("Production-ready") {
-                    PatternLink(number: 7, title: "AsyncSequence", subtitle: "Streams values over time with for-await.") {
+                    PatternLink(number: 8, title: "AsyncSequence", subtitle: "Streams values over time with for-await.") {
                         AsyncSequenceView()
                     }
-                    PatternLink(number: 8, title: "Task Cancellation", subtitle: "Cooperative cancellation for long-running work.") {
+                    PatternLink(number: 9, title: "Task Cancellation", subtitle: "Cooperative cancellation for long-running work.") {
                         TaskCancellationView()
                     }
                 }

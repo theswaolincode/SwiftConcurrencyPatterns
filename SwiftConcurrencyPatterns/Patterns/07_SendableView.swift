@@ -1,7 +1,7 @@
 import SwiftUI
 import Foundation
 
-// MARK: - Pattern 9: Sendable
+// MARK: - Pattern 7: Sendable
 //
 // `Sendable` marks a type as safe to pass across concurrency domains (into
 // a `Task`, an `actor`, another thread) without risking a data race.
